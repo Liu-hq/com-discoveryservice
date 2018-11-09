@@ -1,0 +1,47 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.6.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        maven { url "http://repo.spring.io/libs-snapshot" }
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+group 'com.dyrs.mtsp.discoveryservice'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.cloud.discovery.eureka.DiscoveryApplication'
+    }
+}
+
+task copyJar(dependsOn:build ,type:Copy){
+    from 'build/libs'
+    into '../libs'
+    include '**/*.jar'
+    exclude{
+        details ->details.file.name.endsWith('.original')
+    }
+}
+
+repositories {
+//    mavenLocal()
+    maven { url "http://repo.spring.io/libs-snapshot" }
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-eureka-server', version: '1.4.5.RELEASE'
+}
